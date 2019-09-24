@@ -2,3 +2,5 @@
 /libs
 /androidTest
 /test
+/src/androidTest
+/src/test

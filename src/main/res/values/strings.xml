@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">勤怠記録</string>
+    <string name="action_settings">設定</string>
+    <string name="recorded_1">記録しました</string>
+    <string name="recorded_2">本日は記録済みです</string>
+    <string name="record_failed">記録に失敗しました</string>
+</resources>

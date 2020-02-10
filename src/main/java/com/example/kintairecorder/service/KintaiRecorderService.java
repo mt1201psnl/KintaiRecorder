@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.kintairecorder.R;
-import com.example.kintairecorder.command.KintaiRecorderRegistCommand;
+import com.example.kintairecorder.command.KintaiRecorderInsertCommand;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -38,14 +38,17 @@ public class KintaiRecorderService extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                // Command実行
-                KintaiRecorderRegistCommand command = new KintaiRecorderRegistCommand(getApplicationContext());
+                // InsertCommand実行
+                KintaiRecorderInsertCommand command = new KintaiRecorderInsertCommand(getApplicationContext());
                 command.execute();
 
                 // insert結果取得
                 int result = command.getResult();
                 // Snackbar表示
-                showResult(view, result);
+                showRegistResult(view, result);
+
+                // メイン画面更新処理
+                // KintaiRecorderSelectCommand実行
 
             }
         });
@@ -56,7 +59,7 @@ public class KintaiRecorderService extends AppCompatActivity {
      * @param view
      * @param result
      */
-    private void showResult(View view, int result) {
+    private void showRegistResult(View view, int result) {
         if (result == 0) {
             // 挿入成功
             Snackbar.make(view, (R.string.recorded_1), Snackbar.LENGTH_SHORT).setAction("Action", null).show();

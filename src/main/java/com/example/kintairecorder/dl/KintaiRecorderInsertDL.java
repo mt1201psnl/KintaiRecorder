@@ -3,25 +3,25 @@ package com.example.kintairecorder.dl;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.kintairecorder.dl.db.accessor.TblRecordAccessor;
-import com.example.kintairecorder.dl.db.entity.TblRecord;
+import com.example.kintairecorder.dl.db.Mgr.TblKintaiRecordMgr;
+import com.example.kintairecorder.dl.db.entity.TblKintaiRecord;
 
 /**
  * KintaiRecorderRegistのDomainLogic。
  */
-public class KintaiRecorderRegistDL {
+public class KintaiRecorderInsertDL {
 
     // Context
     private Context context;
     // TBL_RECORDのEntity
-    TblRecord tbl_record_entity;
+    private TblKintaiRecord tbl_record_entity;
 
     /**
      * 引数にContextを受け取るコンストラクタ
      * @param context
      */
-    public KintaiRecorderRegistDL(Context context) {
-        this.tbl_record_entity = new TblRecord(context);
+    public KintaiRecorderInsertDL(Context context) {
+        this.tbl_record_entity = new TblKintaiRecord(context);
     }
 
     /**
@@ -35,10 +35,9 @@ public class KintaiRecorderRegistDL {
         // db接続
         SQLiteDatabase db = tbl_record_entity.getWritableDatabase();
         // Accessor作成
-        TblRecordAccessor tbl_record_accsessor = new TblRecordAccessor(db, dateTmp, timeTmp);
-        // 挿入
-        int result = tbl_record_accsessor.insertTime();
+        TblKintaiRecordMgr tbl_record_accsessor = new TblKintaiRecordMgr(db, dateTmp, timeTmp);
+
         // 処理結果返却
-        return result;
+        return tbl_record_accsessor.insertTime();
     }
 }

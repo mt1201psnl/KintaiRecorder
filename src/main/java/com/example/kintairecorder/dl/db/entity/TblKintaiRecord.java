@@ -8,7 +8,7 @@ import com.example.kintairecorder.dl.db.entity.Abstract.AbstractEntity;
 /**
  * TBL_RECORDのEntityクラス。
  */
-public final class TblRecord extends AbstractEntity {
+public final class TblKintaiRecord extends AbstractEntity {
 
     private static final String SQL_CREATE_TABLE =
             "CREATE TABLE " + KintaiRecorderConst.TABLE_NAME + "("
@@ -21,7 +21,7 @@ public final class TblRecord extends AbstractEntity {
      * 親クラスでテーブルのチェックを行う。
      * @param context
      */
-    public TblRecord(Context context) {
+    public TblKintaiRecord(Context context) {
         super(context, KintaiRecorderConst.DATABASE_NAME, null, KintaiRecorderConst.DATABASE_VERSION,SQL_CREATE_TABLE);
     }
 }

@@ -2,7 +2,7 @@ package com.example.kintairecorder.command;
 
 import android.content.Context;
 
-import com.example.kintairecorder.dl.KintaiRecorderRegistDL;
+import com.example.kintairecorder.dl.KintaiRecorderInsertDL;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * KintaiRecorderRegistのCommand。
  */
-public class KintaiRecorderRegistCommand {
+public class KintaiRecorderInsertCommand {
 
     private Context context;
     private int result;
@@ -19,7 +19,7 @@ public class KintaiRecorderRegistCommand {
      * 引数にContextを受け取るコンストラクタ。
      * @param context
      */
-    public KintaiRecorderRegistCommand(Context context) {
+    public KintaiRecorderInsertCommand(Context context) {
         this.context = context;
     }
 
@@ -39,7 +39,7 @@ public class KintaiRecorderRegistCommand {
         String timeTmp = sdf_time.format(date);
 
         // DL実行
-        KintaiRecorderRegistDL dl = new KintaiRecorderRegistDL(context);
+        KintaiRecorderInsertDL dl = new KintaiRecorderInsertDL(context);
         result = dl.insertTblRecord(dateTmp, timeTmp);
 
     }

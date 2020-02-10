@@ -9,14 +9,21 @@
     tools:showIn="@layout/activity_main">
 
 
-    <TextView
-        android:id="@+id/date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:layout_marginBottom="80dp">
+
+        <TextView
+            android:id="@+id/record_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="2019/09/01(日)　9:00 - 18:00\n2019/09/01(日)　9:00 - 18:00"
+            android:textSize="26dp" />
+    </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

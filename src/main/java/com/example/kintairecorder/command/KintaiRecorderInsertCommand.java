@@ -12,7 +12,10 @@ import java.util.Date;
  */
 public class KintaiRecorderInsertCommand {
 
+    // Context
     private Context context;
+
+    // 処理結果コード
     private int result;
 
     /**
@@ -31,11 +34,11 @@ public class KintaiRecorderInsertCommand {
         // 現在日時の取得
         // 日付(主キー)と時分を取得する
         Date date = new Date();
-        SimpleDateFormat sdf_key = new SimpleDateFormat("YYYYMMdd");
+        SimpleDateFormat sdf_key = new SimpleDateFormat("yyyy/MM/dd(E)");
         SimpleDateFormat sdf_time = new SimpleDateFormat("HH:mm");
 
         // フォーマット
-        int dateTmp = Integer.parseInt(sdf_key.format(date));
+        String dateTmp = sdf_key.format(date);
         String timeTmp = sdf_time.format(date);
 
         // DL実行
@@ -45,7 +48,7 @@ public class KintaiRecorderInsertCommand {
     }
 
     /**
-     * DB登録処理結果を取得する。
+     * 処理結果コードを取得する。
      * @return result
      */
     public int getResult() {

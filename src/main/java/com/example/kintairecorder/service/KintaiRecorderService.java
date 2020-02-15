@@ -1,15 +1,18 @@
 package com.example.kintairecorder.service;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.kintairecorder.R;
 import com.example.kintairecorder.command.KintaiRecorderInsertCommand;
+import com.example.kintairecorder.command.KintaiRecorderSelectCommand;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -19,6 +22,14 @@ import com.google.android.material.snackbar.Snackbar;
  */
 public class KintaiRecorderService extends AppCompatActivity {
 
+    // 処理状態コード
+    private int stateCode;
+
+    // 0(初期表示未済)で初期化
+    {
+        stateCode = 0;
+    }
+
     /**
      * onCreateメソッドの実装。
      * @param savedInstanceState
@@ -27,28 +38,63 @@ public class KintaiRecorderService extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Context
+        final Context context = getApplicationContext();
+
         // ボタン等
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // 初回起動の場合、DBデータ取得を行って表示する
+        if (stateCode == 0) {
+            // メイン画面更新処理
+            KintaiRecorderSelectCommand selectCommand = new KintaiRecorderSelectCommand(context, 0);
+            selectCommand.execute();
+
+            // 画面更新用文字列(DB取得結果)の取得
+            String resultStr = selectCommand.getReturnStr();
+
+            // 文字列の表示
+            TextView textView = findViewById(R.id.record_data);
+            textView.setText(resultStr);
+
+            // 初期表示済み(登録未済)に更新
+            stateCode = 1;
+        }
+
         // 記録ボタン制御
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton recordButton = findViewById(R.id.record_button);
+        recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // InsertCommand実行
-                KintaiRecorderInsertCommand command = new KintaiRecorderInsertCommand(getApplicationContext());
-                command.execute();
+                // 本日登録済み状態なら、DB取得せずSnackbarを表示して終了
+                if (stateCode == 2) {
+                    showRegistResult(view, stateCode);
+                    return;
+                }
 
-                // insert結果取得
-                int result = command.getResult();
-                // Snackbar表示
-                showRegistResult(view, result);
+                // InsertCommand実行
+                KintaiRecorderInsertCommand insertCommand = new KintaiRecorderInsertCommand(context);
+                insertCommand.execute();
 
                 // メイン画面更新処理
-                // KintaiRecorderSelectCommand実行
+                KintaiRecorderSelectCommand selectCommand = new KintaiRecorderSelectCommand(context, 0);
+                selectCommand.execute();
+
+                // 画面更新用文字列(DB取得結果)の取得
+                String resultStr = selectCommand.getReturnStr();
+
+                // 文字列の表示
+                TextView textView = findViewById(R.id.record_data);
+                textView.setText(resultStr);
+
+                // insert結果取得
+                int result = insertCommand.getResult();
+
+                // Snackbar表示
+                showRegistResult(view, result);
 
             }
         });
@@ -60,12 +106,14 @@ public class KintaiRecorderService extends AppCompatActivity {
      * @param result
      */
     private void showRegistResult(View view, int result) {
-        if (result == 0) {
+        if (result == 1) {
             // 挿入成功
             Snackbar.make(view, (R.string.recorded_1), Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-        } else if (result == 1) {
+        } else if (result == 2) {
             // 一意制約違反
             Snackbar.make(view, (R.string.recorded_2), Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+            // 処理状態コードを本日登録済みに更新
+            stateCode = 2;
         } else {
             // その他エラー
             Snackbar.make(view, (R.string.record_failed), Snackbar.LENGTH_LONG).setAction("Action", null).show();

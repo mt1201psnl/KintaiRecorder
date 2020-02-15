@@ -4,6 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * EntityのAbstractクラス。
+ * オブジェクトの存在チェックを行う。
+ */
 public abstract class AbstractEntity extends SQLiteOpenHelper {
 
     private String SQL_CREATE_TABLE;

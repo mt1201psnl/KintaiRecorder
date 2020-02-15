@@ -8,7 +8,6 @@
     tools:context=".service.KintaiRecorderService"
     tools:showIn="@layout/activity_main">
 
-
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -21,9 +20,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="2019/09/01(日)　9:00 - 18:00\n2019/09/01(日)　9:00 - 18:00"
-            android:textSize="26dp" />
-    </ScrollView>
+            android:text="@string/select_record"
+            android:textSize="23sp" />
 
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

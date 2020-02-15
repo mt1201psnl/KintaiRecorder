@@ -2,6 +2,7 @@ package com.example.kintairecorder.command;
 
 import android.content.Context;
 
+import com.example.kintairecorder.KintaiRecorderConst;
 import com.example.kintairecorder.dl.KintaiRecorderSelectDL;
 import com.example.kintairecorder.vo.KintaiRecordVo;
 
@@ -16,17 +17,21 @@ import java.util.HashMap;
  */
 public class KintaiRecorderSelectCommand {
 
+    // 取得内容
+    private final int order;
+    // Context
     private Context context;
-
-    // 返却用List
-    private HashMap<String, String> result = new HashMap<>();
+    // 返却用文字列
+    private String returnStr = "";
 
     /**
-     * 引数にContextを受け取るコンストラクタ。
+     * 引数にContextと取得内容(int)を受け取るコンストラクタ。
      * @param context
+     * @param order
      */
-    public KintaiRecorderSelectCommand(Context context) {
+    public KintaiRecorderSelectCommand(Context context, int order) {
         this.context = context;
+        this.order = order;
     }
 
     /**
@@ -47,7 +52,7 @@ public class KintaiRecorderSelectCommand {
         lastMonthDate = lastMonthCal.getTime();
 
         // フォーマッター
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYYMM");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");
 
         // 当月と前月をフォーマット
         String thisMonthStr = sdf.format(thisMonthDate);
@@ -55,17 +60,58 @@ public class KintaiRecorderSelectCommand {
 
         // DL実行
         KintaiRecorderSelectDL dl = new KintaiRecorderSelectDL(context);
-        HashMap<String, ArrayList<KintaiRecordVo>> resultMap = dl.selectTblRecord(thisMonthStr, lastMonthStr);
+        HashMap<String, ArrayList<KintaiRecordVo>> resultMap = dl.selectTblKintaiRecord(thisMonthStr, lastMonthStr);
 
-        // 以下未実装
+        // 分離処理
+        ArrayList<KintaiRecordVo> thisMonthRecordList = resultMap.get(thisMonthStr);
+        ArrayList<KintaiRecordVo> lastMonthRecordList = resultMap.get(lastMonthStr);
+
+        this.returnStr = createReturnStr(thisMonthRecordList, lastMonthRecordList, this.order);
+
+    }
+
+    /**
+     * 画面表示用文字列を生成する。
+     * @param thisList
+     * @param lastList
+     * @return sb.toString()
+     */
+    private String createReturnStr(ArrayList<KintaiRecordVo> thisList, ArrayList<KintaiRecordVo> lastList, int order) {
+
+        // TODO orderを使って表示順を指定できるようにする(現状は先月→今月で固定)
+
+        // 組み立て用sb
+        StringBuilder sb = new StringBuilder();
+
+        // 先月分のレコードを連結して文字列にする
+        sb.append(KintaiRecorderConst.NEWLINE);
+        for (KintaiRecordVo lastVo : lastList) {
+            sb.append(lastVo.getDate());
+            sb.append(KintaiRecorderConst.HALF_SPACE_THREE);
+            sb.append(KintaiRecorderConst.SHIGYOU);
+            sb.append(lastVo.getTime());
+            sb.append(KintaiRecorderConst.NEWLINE);
+        }
+
+        // 今月分のレコードを連結して文字列にする
+        sb.append(KintaiRecorderConst.NEWLINE);
+        for (KintaiRecordVo thisVo : thisList) {
+            sb.append(thisVo.getDate());
+            sb.append(KintaiRecorderConst.HALF_SPACE_THREE);
+            sb.append(KintaiRecorderConst.SHIGYOU);
+            sb.append(thisVo.getTime());
+            sb.append(KintaiRecorderConst.NEWLINE);
+        }
+
+        return sb.toString();
 
     }
 
     /**
      * DB検索結果を取得する。
-     * @return result
+     * @return returnStr
      */
-    public HashMap<String, String> getResult() {
-        return result;
+    public String getReturnStr() {
+        return returnStr;
     }
 }

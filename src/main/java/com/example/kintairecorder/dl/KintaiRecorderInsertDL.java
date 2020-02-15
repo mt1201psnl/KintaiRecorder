@@ -13,7 +13,8 @@ public class KintaiRecorderInsertDL {
 
     // Context
     private Context context;
-    // TBL_RECORDのEntity
+
+    // TBL_KINTAI_RECORDのEntity
     private TblKintaiRecord tbl_record_entity;
 
     /**
@@ -28,16 +29,16 @@ public class KintaiRecorderInsertDL {
      * レコード挿入処理。
      * @param dateTmp
      * @param timeTmp
-     * @return
+     * @return 処理結果
      */
-    public int insertTblRecord(int dateTmp, String timeTmp) {
+    public int insertTblRecord(String dateTmp, String timeTmp) {
 
         // db接続
         SQLiteDatabase db = tbl_record_entity.getWritableDatabase();
         // Accessor作成
-        TblKintaiRecordMgr tbl_record_accsessor = new TblKintaiRecordMgr(db, dateTmp, timeTmp);
+        TblKintaiRecordMgr tblKintaiRecordMgr = new TblKintaiRecordMgr(db, dateTmp, timeTmp);
 
         // 処理結果返却
-        return tbl_record_accsessor.insertTime();
+        return tblKintaiRecordMgr.insertTime();
     }
 }

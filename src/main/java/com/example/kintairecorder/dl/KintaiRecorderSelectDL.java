@@ -15,30 +15,32 @@ import java.util.HashMap;
  */
 public class KintaiRecorderSelectDL {
 
-    // Context
-    private Context context;
     // TBL_RECORDのEntity
     private TblKintaiRecord tbl_record_entity;
 
+    /**
+     * 引数にContextを受け取るコンストラクタ
+     * @param context
+     */
     public KintaiRecorderSelectDL(Context context) {
         this.tbl_record_entity = new TblKintaiRecord(context);
     }
 
-    public HashMap<String, ArrayList<KintaiRecordVo>> selectTblRecord(String thisMonthStr, String lastMonthStr) {
+    /**
+     * テーブル検索処理。
+     * @param thisMonthStr
+     * @param lastMonthStr
+     * @return recordMap
+     */
+    public HashMap<String, ArrayList<KintaiRecordVo>> selectTblKintaiRecord(String thisMonthStr, String lastMonthStr) {
 
         // db接続
         SQLiteDatabase db = tbl_record_entity.getReadableDatabase();
-        // Accessor作成
+        // Mgr作成
         TblKintaiRecordMgr tblKintaiRecordMgr = new TblKintaiRecordMgr(db, thisMonthStr, lastMonthStr);
-        // select
-        HashMap<String, ArrayList<KintaiRecordVo>> recordMap = tblKintaiRecordMgr.selectRecord();
 
-        // 分離処理(没)
-        ArrayList<KintaiRecordVo> thisMonthRecordList = recordMap.get(thisMonthStr);
-        ArrayList<KintaiRecordVo> lastMonthRecordList = recordMap.get(lastMonthStr);
-
-        // 処理結果返却
-        return recordMap;
+        // selectを実行して取得結果Mapを返却
+        return tblKintaiRecordMgr.selectRecord();
     }
 
 }

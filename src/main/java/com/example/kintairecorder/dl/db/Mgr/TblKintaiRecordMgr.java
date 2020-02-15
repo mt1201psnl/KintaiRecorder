@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import com.example.kintairecorder.KintaiRecorderConst;
-import com.example.kintairecorder.dl.db.Mgr.Absract.AbstractAccessor;
+import com.example.kintairecorder.dl.db.Mgr.Absract.AbstractMgr;
 import com.example.kintairecorder.vo.KintaiRecordVo;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import static android.content.ContentValues.TAG;
  * TBL_RECORDのAccessorクラス。
  * CRUD操作を提供する。
  */
-public class TblKintaiRecordMgr extends AbstractAccessor {
+public class TblKintaiRecordMgr extends AbstractMgr {
 
     // db
     private SQLiteDatabase db;
@@ -38,6 +38,9 @@ public class TblKintaiRecordMgr extends AbstractAccessor {
 
     /**
      * insert用コンストラクタ
+     * @param db
+     * @param date
+     * @param time
      */
     public TblKintaiRecordMgr(SQLiteDatabase db, int date, String time) {
         this.db = db;
@@ -47,12 +50,14 @@ public class TblKintaiRecordMgr extends AbstractAccessor {
 
     /**
      * select用コンストラクタ
+     * @param db
+     * @param thisMonthStr
+     * @param lastMonthStr
      */
     public TblKintaiRecordMgr(SQLiteDatabase db, String thisMonthStr, String lastMonthStr) {
         this.db = db;
         this.thisMonthStr = thisMonthStr;
         this.lastMonthStr = lastMonthStr;
-
     }
 
     /**
@@ -63,21 +68,21 @@ public class TblKintaiRecordMgr extends AbstractAccessor {
 
         //values作成
         ContentValues values = new ContentValues();
-        values.put(KintaiRecorderConst.DATE, this.date);
-        values.put(KintaiRecorderConst.TIME, this.time);
+        values.put(KintaiRecorderConst.DATE, this.thisMonthStr);
+        values.put(KintaiRecorderConst.TIME, this.lastMonthStr);
 
         try {
             // 実行時に例外を受け取る
             db.insertOrThrow(KintaiRecorderConst.TABLE_NAME, null, values);
         } catch (SQLiteConstraintException conex) {
             // 一意制約違反
-            return 1;
+            return 2;
         } catch (SQLiteException ex) {
             // その他のSQLiteException
             Log.e(TAG, ex.getMessage(), ex);
-            return 2;
+            return 3;
         }
-        return 0;
+        return 1;
     }
 
     /**
@@ -90,7 +95,7 @@ public class TblKintaiRecordMgr extends AbstractAccessor {
         ArrayList<KintaiRecordVo> thisMonthRecordList = new ArrayList<>();
 
         // クエリ文
-        String sqlStrThisM = "select DATE,TIME" + " from " + KintaiRecorderConst.TABLE_NAME + " where DATE like '" + thisMonthStr + "%'" + "order by DATE asc";
+        String sqlStrThisM = "select *" + " from " + KintaiRecorderConst.TABLE_NAME + " where DATE like '" + this.thisMonthStr + "%'" + "order by DATE asc";
 
         // SQL実行
         Cursor cursorThisM = db.rawQuery(sqlStrThisM, null);
@@ -102,18 +107,17 @@ public class TblKintaiRecordMgr extends AbstractAccessor {
                 String timeStr = cursorThisM.getString(1);
                 KintaiRecordVo vo = new KintaiRecordVo();
                 vo.setDate(dateStr);
-                vo.setDate(timeStr);
+                vo.setTime(timeStr);
                 thisMonthRecordList.add(vo);
             } while (cursorThisM.moveToNext());
         }
-
         cursorThisM.close();
 
         /** 先月分**/
         ArrayList<KintaiRecordVo> lastMonthRecordList = new ArrayList<>();
 
         // クエリ文
-        String sqlStrLastM = "select DATE,TIME" + " from " + KintaiRecorderConst.TABLE_NAME + " where DATE like '" + lastMonthStr + "%'" + "order by DATE asc";
+        String sqlStrLastM = "select DATE,TIME" + " from " + KintaiRecorderConst.TABLE_NAME + " where DATE like '" + this.lastMonthStr + "%'" + "order by DATE asc";
 
         // SQL実行
         Cursor cursorLastM = db.rawQuery(sqlStrLastM, null);
@@ -125,11 +129,10 @@ public class TblKintaiRecordMgr extends AbstractAccessor {
                 String timeStr = cursorLastM.getString(1);
                 KintaiRecordVo vo = new KintaiRecordVo();
                 vo.setDate(dateStr);
-                vo.setDate(timeStr);
+                vo.setTime(timeStr);
                 lastMonthRecordList.add(vo);
             } while (cursorLastM.moveToNext());
         }
-
         cursorLastM.close();
 
         // MapにそれぞれのListを格納

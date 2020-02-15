@@ -15,5 +15,9 @@ public final class KintaiRecorderConst {
     public static final String DATE = "DATE";
     public static final String TIME = "TIME";
     public static final String REASON = "REASON";
+    // 固定文字列
+    public static String HALF_SPACE_THREE = "   ";
+    public static String SHIGYOU = "09:00 - ";
+    public static String NEWLINE = "\n";
 
 }

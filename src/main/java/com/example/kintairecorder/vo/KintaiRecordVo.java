@@ -8,7 +8,7 @@ public class KintaiRecordVo {
 
     private String date;
     private String time;
-    private String reason;
+    private String reason = "";
 
     public String getDate() {
         return date;
